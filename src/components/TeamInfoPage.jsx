@@ -1,9 +1,38 @@
 var React = require('react');
 var SeasonInfo = require('./SeasonInfo.jsx');
 var TeamInfoHeader = require('./TeamInfoHeader.jsx');
+var Reflux = require('reflux');
+var Actions = require('../Reflux/Actions.jsx');
+var TeamStore = require('../Reflux/TeamStore.jsx');
 
 var TeamInfoPage = React.createClass({
+  mixins:[Reflux.listenTo(TeamStore, 'onChange')],
+  getInitialState : function() {
+    return({teamInfo: []});
+  },
+  componentWillMount : function() {
+    Actions.getTeamInfo('2015-16', '1610612761', 'Regular%20Season');
+  },
+  onChange : function(event, teamInfo) {
+    this.setState({teamInfo: teamInfo});
+  },
   render : function() {
+    //console.log(teamInfo);
+    if(this.state.teamInfo.resultSets) {
+      // Team statistics for top panel
+      var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
+      var arr = this.state.teamInfo.resultSets[0].headers;
+      var year = teamInformation[arr.indexOf("SEASON_YEAR")];
+      var conferenceRank = teamInformation[arr.indexOf("CONF_RANK")];
+      var teamConference = teamInformation[arr.indexOf("TEAM_CONFERENCE")];
+      var divisionRank = teamInformation[arr.indexOf("DIV_RANK")];
+      var teamDivision = teamInformation[arr.indexOf("TEAM_DIVISION")];
+      var wins = teamInformation[arr.indexOf("W")];
+      var losses = teamInformation[arr.indexOf("L")];
+      var winPct = teamInformation[arr.indexOf("PCT")].toFixed(2) * 100;
+
+
+    }
     return (
       <div className="container">
         <div className="row">
@@ -14,14 +43,14 @@ var TeamInfoPage = React.createClass({
                   path="../public/img/toronto-raptors.png"
                   width="300"
                   alt="Raptors Logo"
-                  year="2015-16"
-                  conferenceRank="2nd"
-                  conference="East"
-                  divisionRank="1st"
-                  division="Atlantic"
-                  wins="33"
-                  losses="16"
-                  winPercentage={(0.673*100).toFixed(2)}
+                  year={year}
+                  conferenceRank={conferenceRank}
+                  conference={teamConference}
+                  divisionRank={divisionRank}
+                  division={teamDivision}
+                  wins={wins}
+                  losses={losses}
+                  winPercentage={winPct}
                 />
               </div>
               <div className="panel-body">
