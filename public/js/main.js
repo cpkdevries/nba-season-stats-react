@@ -20874,7 +20874,7 @@ var TeamStore = Reflux.createStore({
 
 module.exports = TeamStore;
 
-},{"../services/httpservice":187,"./Actions.jsx":180,"reflux":176}],182:[function(require,module,exports){
+},{"../services/httpservice":188,"./Actions.jsx":180,"reflux":176}],182:[function(require,module,exports){
 var React = require('react');
 
 var SeasonInfo = React.createClass({
@@ -21105,6 +21105,7 @@ var TeamInfoHeader = require('./TeamInfoHeader.jsx');
 var Reflux = require('reflux');
 var Actions = require('../Reflux/Actions.jsx');
 var TeamStore = require('../Reflux/TeamStore.jsx');
+var helpers = require('../helpers/helpers');
 
 var TeamInfoPage = React.createClass({
   displayName: 'TeamInfoPage',
@@ -21114,7 +21115,7 @@ var TeamInfoPage = React.createClass({
     return { teamInfo: [] };
   },
   componentWillMount: function () {
-    Actions.getTeamInfo('2015-16', '1610612761', 'Regular%20Season');
+    Actions.getTeamInfo('2014-15', '1610612761', 'Regular%20Season');
   },
   onChange: function (event, teamInfo) {
     this.setState({ teamInfo: teamInfo });
@@ -21124,15 +21125,27 @@ var TeamInfoPage = React.createClass({
     if (this.state.teamInfo.resultSets) {
       // Team statistics for top panel
       var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
-      var arr = this.state.teamInfo.resultSets[0].headers;
-      var year = teamInformation[arr.indexOf("SEASON_YEAR")];
-      var conferenceRank = teamInformation[arr.indexOf("CONF_RANK")];
-      var teamConference = teamInformation[arr.indexOf("TEAM_CONFERENCE")];
-      var divisionRank = teamInformation[arr.indexOf("DIV_RANK")];
-      var teamDivision = teamInformation[arr.indexOf("TEAM_DIVISION")];
-      var wins = teamInformation[arr.indexOf("W")];
-      var losses = teamInformation[arr.indexOf("L")];
-      var winPct = teamInformation[arr.indexOf("PCT")].toFixed(2) * 100;
+      var statsHeaders = this.state.teamInfo.resultSets[0].headers;
+      var year = teamInformation[statsHeaders.indexOf("SEASON_YEAR")];
+      var conferenceRank = helpers.humanizeNumber(teamInformation[statsHeaders.indexOf("CONF_RANK")]);
+      var teamConference = teamInformation[statsHeaders.indexOf("TEAM_CONFERENCE")];
+      var divisionRank = helpers.humanizeNumber(teamInformation[statsHeaders.indexOf("DIV_RANK")]);
+      var teamDivision = teamInformation[statsHeaders.indexOf("TEAM_DIVISION")];
+      var wins = teamInformation[statsHeaders.indexOf("W")];
+      var losses = teamInformation[statsHeaders.indexOf("L")];
+      var winPct = helpers.humanizePercentage(teamInformation[statsHeaders.indexOf("PCT")]);
+
+      // Team Ranks (body)
+      var ranksHeaders = this.state.teamInfo.resultSets[1].headers;
+      var teamRanks = this.state.teamInfo.resultSets[1].rowSet[0];
+      var pointsRank = teamRanks[ranksHeaders.indexOf("PTS_RANK")];
+      var ppg = teamRanks[ranksHeaders.indexOf("PTS_PG")];
+      var assistsRank = teamRanks[ranksHeaders.indexOf("AST_RANK")];
+      var apg = teamRanks[ranksHeaders.indexOf("AST_PG")];
+      var reboundsRank = teamRanks[ranksHeaders.indexOf("REB_RANK")];
+      var rpg = teamRanks[ranksHeaders.indexOf("REB_PG")];
+      var opponentsPointsRank = teamRanks[ranksHeaders.indexOf("OPP_PTS_RANK")];
+      var oppg = teamRanks[ranksHeaders.indexOf("OPP_PTS_PG")];
     }
     return React.createElement(
       'div',
@@ -21167,14 +21180,14 @@ var TeamInfoPage = React.createClass({
               'div',
               { className: 'panel-body' },
               React.createElement(SeasonInfo, {
-                pointsRank: '5',
-                ppg: '101.1',
-                assistsRank: '7',
-                apg: '19',
-                reboundsRank: '5',
-                rpg: '30',
-                opponentPointsRank: '12',
-                oppg: '95.2'
+                pointsRank: pointsRank,
+                ppg: ppg,
+                assistsRank: assistsRank,
+                apg: apg,
+                reboundsRank: reboundsRank,
+                rpg: rpg,
+                opponentPointsRank: opponentsPointsRank,
+                oppg: oppg
               })
             )
           )
@@ -21195,7 +21208,7 @@ var TeamInfoPage = React.createClass({
 
 module.exports = TeamInfoPage;
 
-},{"../Reflux/Actions.jsx":180,"../Reflux/TeamStore.jsx":181,"./SeasonInfo.jsx":182,"./TeamInfoHeader.jsx":183,"react":160,"reflux":176}],185:[function(require,module,exports){
+},{"../Reflux/Actions.jsx":180,"../Reflux/TeamStore.jsx":181,"../helpers/helpers":186,"./SeasonInfo.jsx":182,"./TeamInfoHeader.jsx":183,"react":160,"reflux":176}],185:[function(require,module,exports){
 var React = require('react');
 
 var TeamLogo = React.createClass({
@@ -21216,13 +21229,37 @@ var TeamLogo = React.createClass({
 module.exports = TeamLogo;
 
 },{"react":160}],186:[function(require,module,exports){
+var helpers = {
+  humanizeNumber: function (number) {
+    var suffixes = {
+      0: "th",
+      1: "st",
+      2: "nd",
+      3: "rd",
+      4: "th",
+      5: "th",
+      6: "th",
+      7: "th",
+      8: "th",
+      9: "th"
+    };
+    return number + suffixes[number.toString().slice(-1)];
+  },
+  humanizePercentage: function (percentage) {
+    return (percentage * 100).toFixed(2);
+  }
+};
+
+module.exports = helpers;
+
+},{}],187:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var TeamInfoPage = require('./components/TeamInfoPage.jsx');
 
 ReactDOM.render(React.createElement(TeamInfoPage, null), document.getElementById('main'));
 
-},{"./components/TeamInfoPage.jsx":184,"react":160,"react-dom":31}],187:[function(require,module,exports){
+},{"./components/TeamInfoPage.jsx":184,"react":160,"react-dom":31}],188:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var FetchJsonp = require('fetch-jsonp');
 var baseUrl = "http://stats.nba.com";
@@ -21237,4 +21274,4 @@ var service = {
 
 module.exports = service;
 
-},{"fetch-jsonp":29,"whatwg-fetch":179}]},{},[186]);
+},{"fetch-jsonp":29,"whatwg-fetch":179}]},{},[187]);

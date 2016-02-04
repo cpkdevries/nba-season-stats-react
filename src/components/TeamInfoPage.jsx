@@ -4,6 +4,7 @@ var TeamInfoHeader = require('./TeamInfoHeader.jsx');
 var Reflux = require('reflux');
 var Actions = require('../Reflux/Actions.jsx');
 var TeamStore = require('../Reflux/TeamStore.jsx');
+var helpers = require('../helpers/helpers');
 
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
@@ -11,7 +12,7 @@ var TeamInfoPage = React.createClass({
     return({teamInfo: []});
   },
   componentWillMount : function() {
-    Actions.getTeamInfo('2015-16', '1610612761', 'Regular%20Season');
+    Actions.getTeamInfo('2014-15', '1610612761', 'Regular%20Season');
   },
   onChange : function(event, teamInfo) {
     this.setState({teamInfo: teamInfo});
@@ -21,15 +22,28 @@ var TeamInfoPage = React.createClass({
     if(this.state.teamInfo.resultSets) {
       // Team statistics for top panel
       var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
-      var arr = this.state.teamInfo.resultSets[0].headers;
-      var year = teamInformation[arr.indexOf("SEASON_YEAR")];
-      var conferenceRank = teamInformation[arr.indexOf("CONF_RANK")];
-      var teamConference = teamInformation[arr.indexOf("TEAM_CONFERENCE")];
-      var divisionRank = teamInformation[arr.indexOf("DIV_RANK")];
-      var teamDivision = teamInformation[arr.indexOf("TEAM_DIVISION")];
-      var wins = teamInformation[arr.indexOf("W")];
-      var losses = teamInformation[arr.indexOf("L")];
-      var winPct = teamInformation[arr.indexOf("PCT")].toFixed(2) * 100;
+      var statsHeaders = this.state.teamInfo.resultSets[0].headers;
+      var year = teamInformation[statsHeaders.indexOf("SEASON_YEAR")];
+      var conferenceRank = helpers.humanizeNumber(teamInformation[statsHeaders.indexOf("CONF_RANK")]);
+      var teamConference = teamInformation[statsHeaders.indexOf("TEAM_CONFERENCE")];
+      var divisionRank = helpers.humanizeNumber(teamInformation[statsHeaders.indexOf("DIV_RANK")]);
+      var teamDivision = teamInformation[statsHeaders.indexOf("TEAM_DIVISION")];
+      var wins = teamInformation[statsHeaders.indexOf("W")];
+      var losses = teamInformation[statsHeaders.indexOf("L")];
+      var winPct = helpers.humanizePercentage(teamInformation[statsHeaders.indexOf("PCT")]);
+
+      // Team Ranks (body)
+      var ranksHeaders = this.state.teamInfo.resultSets[1].headers;
+      var teamRanks = this.state.teamInfo.resultSets[1].rowSet[0];
+      var pointsRank = teamRanks[ranksHeaders.indexOf("PTS_RANK")];
+      var ppg = teamRanks[ranksHeaders.indexOf("PTS_PG")];
+      var assistsRank = teamRanks[ranksHeaders.indexOf("AST_RANK")];
+      var apg = teamRanks[ranksHeaders.indexOf("AST_PG")];
+      var reboundsRank = teamRanks[ranksHeaders.indexOf("REB_RANK")];
+      var rpg = teamRanks[ranksHeaders.indexOf("REB_PG")];
+      var opponentsPointsRank = teamRanks[ranksHeaders.indexOf("OPP_PTS_RANK")];
+      var oppg = teamRanks[ranksHeaders.indexOf("OPP_PTS_PG")];
+
 
 
     }
@@ -55,14 +69,14 @@ var TeamInfoPage = React.createClass({
               </div>
               <div className="panel-body">
                 <SeasonInfo
-                  pointsRank="5"
-                  ppg="101.1"
-                  assistsRank="7"
-                  apg="19"
-                  reboundsRank="5"
-                  rpg="30"
-                  opponentPointsRank="12"
-                  oppg="95.2"
+                  pointsRank={pointsRank}
+                  ppg={ppg}
+                  assistsRank={assistsRank}
+                  apg={apg}
+                  reboundsRank={reboundsRank}
+                  rpg={rpg}
+                  opponentPointsRank={opponentsPointsRank}
+                  oppg={oppg}
                 />
               </div>
             </div>
