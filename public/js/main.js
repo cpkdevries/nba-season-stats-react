@@ -19026,54 +19026,323 @@ module.exports = require('./lib/React');
 
 },{"./lib/React":53}],159:[function(require,module,exports){
 var React = require('react');
-var ListItem = require('./ListItem.jsx');
 
-var ingredients = [{ "id": 1, "text": "ham" }, { "id": 2, "text": "cheese" }, { "id": 3, "text": "potatoes" }];
-
-var List = React.createClass({
-  displayName: 'List',
+var SeasonInfo = React.createClass({
+  displayName: "SeasonInfo",
 
   render: function () {
-    var listItems = ingredients.map(function (item) {
-      return React.createElement(ListItem, { key: item.id, ingredient: item.text });
-    });
-
+    var bold = {
+      fontWeight: "bold"
+    };
     return React.createElement(
-      'ul',
-      null,
-      listItems
-    );
-  }
-});
-
-module.exports = List;
-
-},{"./ListItem.jsx":160,"react":158}],160:[function(require,module,exports){
-var React = require('react');
-
-var ListItem = React.createClass({
-  displayName: 'ListItem',
-
-  render: function () {
-    return React.createElement(
-      'li',
-      null,
+      "div",
+      { className: "season-info" },
       React.createElement(
-        'h4',
-        null,
-        this.props.ingredient
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-xs-12 text-center" },
+          React.createElement(
+            "h2",
+            null,
+            "Season Ranks"
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            { style: bold },
+            "Points"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            null,
+            this.props.pointsRank,
+            " (",
+            this.props.ppg,
+            " Per Game)"
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            { style: bold },
+            "Rebounds"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            null,
+            this.props.reboundsRank,
+            " (",
+            this.props.rpg,
+            " Per Game)"
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            { style: bold },
+            "Assists"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            null,
+            this.props.assistsRank,
+            " (",
+            this.props.apg,
+            " Per Game)"
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            { style: bold },
+            "Opponent Points"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-6" },
+          React.createElement(
+            "p",
+            null,
+            this.props.opponentPointsRank,
+            " (",
+            this.props.oppg,
+            " Per Game)"
+          )
+        )
       )
     );
   }
 });
 
-module.exports = ListItem;
+module.exports = SeasonInfo;
 
-},{"react":158}],161:[function(require,module,exports){
+},{"react":158}],160:[function(require,module,exports){
+var React = require('react');
+var TeamLogo = require('./TeamLogo.jsx');
+
+var TeamInfoHeader = React.createClass({
+  displayName: 'TeamInfoHeader',
+
+  render: function () {
+    var bold = {
+      fontWeight: "bold"
+    };
+    return React.createElement(
+      'div',
+      { className: 'row' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-6 col-xs-12' },
+        React.createElement(TeamLogo, { path: this.props.path, alt: this.props.alt, width: '300' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'col-sm-6 col-xs-12' },
+        React.createElement(
+          'h3',
+          null,
+          this.props.year,
+          ' Season'
+        ),
+        React.createElement(
+          'h4',
+          null,
+          this.props.conferenceRank,
+          ' in the ',
+          this.props.conference
+        ),
+        React.createElement(
+          'h4',
+          null,
+          this.props.divisionRank,
+          ' in the ',
+          this.props.division
+        ),
+        React.createElement(
+          'div',
+          { className: 'text-left' },
+          React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+              'div',
+              { className: 'col-xs-6' },
+              React.createElement(
+                'p',
+                { style: bold },
+                'Record:'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'col-xs-6' },
+              this.props.wins,
+              '-',
+              this.props.losses
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+              'div',
+              { className: 'col-xs-6' },
+              React.createElement(
+                'p',
+                { style: bold },
+                'Winning Percentage:'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'col-xs-6' },
+              this.props.winPercentage,
+              '%'
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = TeamInfoHeader;
+
+},{"./TeamLogo.jsx":162,"react":158}],161:[function(require,module,exports){
+var React = require('react');
+var SeasonInfo = require('./SeasonInfo.jsx');
+var TeamInfoHeader = require('./TeamInfoHeader.jsx');
+
+var TeamInfoPage = React.createClass({
+  displayName: 'TeamInfoPage',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'container' },
+      React.createElement(
+        'div',
+        { className: 'row' },
+        React.createElement(
+          'div',
+          { className: 'col-sm-8 col-xs-12' },
+          React.createElement(
+            'div',
+            { className: 'panel panel-default' },
+            React.createElement(
+              'div',
+              { className: 'panel-heading' },
+              React.createElement(TeamInfoHeader, {
+                path: '../public/img/toronto-raptors.png',
+                width: '300',
+                alt: 'Raptors Logo',
+                year: '2015-16',
+                conferenceRank: '2nd',
+                conference: 'East',
+                divisionRank: '1st',
+                division: 'Atlantic',
+                wins: '33',
+                losses: '16',
+                winPercentage: (0.673 * 100).toFixed(2)
+              })
+            ),
+            React.createElement(
+              'div',
+              { className: 'panel-body' },
+              React.createElement(SeasonInfo, {
+                pointsRank: '5',
+                ppg: '101.1',
+                assistsRank: '7',
+                apg: '19',
+                reboundsRank: '5',
+                rpg: '30',
+                opponentPointsRank: '12',
+                oppg: '95.2'
+              })
+            )
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'col-sm-4 col-xs-12' },
+          React.createElement(
+            'p',
+            null,
+            'All of the team logos are going to go here, eventually.'
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = TeamInfoPage;
+
+},{"./SeasonInfo.jsx":159,"./TeamInfoHeader.jsx":160,"react":158}],162:[function(require,module,exports){
+var React = require('react');
+
+var TeamLogo = React.createClass({
+  displayName: "TeamLogo",
+
+  render: function () {
+    var imgStyle = {
+      width: 250,
+      height: "auto"
+    };
+    if (this.props.width) {
+      imgStyle.width = this.props.width;
+    }
+    return React.createElement("img", { style: imgStyle, src: this.props.path, alt: this.props.alt });
+  }
+});
+
+module.exports = TeamLogo;
+
+},{"react":158}],163:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ListA = require('./components/List.jsx');
+var TeamInfoPage = require('./components/TeamInfoPage.jsx');
 
-ReactDOM.render(React.createElement(ListA, null), document.getElementById('ingredients'));
+ReactDOM.render(React.createElement(TeamInfoPage, null), document.getElementById('main'));
 
-},{"./components/List.jsx":159,"react":158,"react-dom":29}]},{},[161]);
+},{"./components/TeamInfoPage.jsx":161,"react":158,"react-dom":29}]},{},[163]);
