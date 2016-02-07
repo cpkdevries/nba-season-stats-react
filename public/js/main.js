@@ -26226,12 +26226,36 @@ var teamInfo = [{
 }, {
   "id": "1610612744",
   "img": "../img/golden-state-warriors.png"
+}, {
+  "id": "1610612738",
+  "img": "../img/boston-celtics.png"
+}, {
+  "id": "1610612741",
+  "img": "../img/chicago-bulls.png"
+}, {
+  "id": "1610612737",
+  "img": "../img/atlanta-hawks.png"
+}, {
+  "id": "1610612751",
+  "img": "../img/brooklyn-nets.png"
+}, {
+  "id": "1610612739",
+  "img": "../img/cleveland-cavaliers.png"
+}, {
+  "id": "1610612766",
+  "img": "../img/charlotte-hornets.png"
 }];
 
 var BasePage = React.createClass({
   displayName: 'BasePage',
 
   render: function () {
+    var logoLinkStyles = {
+      display: "flex",
+      flexWrap: "wrap",
+      border: "1px solid mistyrose",
+      justifyContent: "center"
+    };
     var teams = teamInfo.map(function (team) {
       return React.createElement(TeamListing, { key: team.id, imgSrc: team.img, id: team.id });
     });
@@ -26255,7 +26279,11 @@ var BasePage = React.createClass({
           React.createElement(
             'div',
             { className: 'col-sm-3 col-xs-12' },
-            teams
+            React.createElement(
+              'div',
+              { className: 'team-logo-links', style: logoLinkStyles },
+              teams
+            )
           )
         )
       )
@@ -26663,18 +26691,18 @@ var TeamListing = React.createClass({
   displayName: 'TeamListing',
 
   render: function () {
+    var padded = {
+      padding: 15,
+      alignSelf: "center"
+    };
     var link = "/teams/" + this.props.id;
     return React.createElement(
       'div',
-      { className: 'team-logo-links' },
+      { style: padded },
       React.createElement(
-        'div',
-        { className: 'col-xs-6' },
-        React.createElement(
-          Link,
-          { to: link },
-          React.createElement('img', { src: this.props.imgSrc, width: '100' })
-        )
+        Link,
+        { to: link },
+        React.createElement('img', { src: this.props.imgSrc, width: '100' })
       )
     );
   }

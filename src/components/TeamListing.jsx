@@ -4,12 +4,14 @@ var Link = ReactRouter.Link;
 
 var TeamListing = React.createClass({
   render : function() {
+    var padded = {
+      padding: 15,
+      alignSelf: "center"
+    };
     var link = "/teams/" + this.props.id;
       return (
-        <div className="team-logo-links">
-            <div className="col-xs-6">
-              <Link to={link}><img src={this.props.imgSrc} width="100" /></Link>
-            </div>
+        <div style={padded}>
+          <Link to={link}><img src={this.props.imgSrc} width="100" /></Link>
         </div>
       );
   }

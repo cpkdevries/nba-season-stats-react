@@ -9,11 +9,42 @@ var teamInfo = [
   {
     "id": "1610612744",
     "img": "../img/golden-state-warriors.png"
+  },
+  {
+    "id": "1610612738",
+    "img": "../img/boston-celtics.png"
+  },
+  {
+    "id": "1610612741",
+    "img": "../img/chicago-bulls.png"
+  },
+  {
+    "id": "1610612737",
+    "img": "../img/atlanta-hawks.png"
+  },
+  {
+    "id": "1610612751",
+    "img": "../img/brooklyn-nets.png"
+  },
+  {
+    "id": "1610612739",
+    "img": "../img/cleveland-cavaliers.png"
+  },
+  {
+    "id": "1610612766",
+    "img": "../img/charlotte-hornets.png"
   }
+
 ];
 
 var BasePage = React.createClass({
   render : function() {
+    var logoLinkStyles = {
+      display: "flex",
+      flexWrap: "wrap",
+      border: "1px solid mistyrose",
+      justifyContent: "center"
+    }
     var teams = teamInfo.map(function(team) {
       return <TeamListing key={team.id} imgSrc={team.img} id={team.id} />;
     });
@@ -28,7 +59,9 @@ var BasePage = React.createClass({
               {this.props.children}
             </div>
             <div className="col-sm-3 col-xs-12">
-              {teams}
+              <div className="team-logo-links" style={logoLinkStyles}>
+                {teams}
+              </div>
             </div>
           </div>
         </div>
