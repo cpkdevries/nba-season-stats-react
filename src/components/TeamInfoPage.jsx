@@ -5,11 +5,12 @@ var Reflux = require('reflux');
 var Actions = require('../Reflux/Actions.jsx');
 var TeamStore = require('../Reflux/TeamStore.jsx');
 var helpers = require('../helpers/helpers');
+var Loader = require('react-loader');
 
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
   getInitialState : function() {
-    return({teamInfo: [], currentSeason: '2014-15', previousSeason: '', nextSeason: ''});
+    return({teamInfo: [], currentSeason: '2014-15', previousSeason: '', nextSeason: '', loaded: false});
   },
   componentDidUpdate : function() {
     if (this.state.currentSeason === this.state.previousSeason || this.state.currentSeason === this.state.nextSeason) {
@@ -20,16 +21,18 @@ var TeamInfoPage = React.createClass({
     this.getPrevAndNextSeasons();
   },
   onChange : function(event, teamInfo) {
-    this.setState({teamInfo: teamInfo});
+    if(this.isMounted()) {
+      this.setState({teamInfo: teamInfo, loaded: true});
+    }
   },
   previousSeasonClick : function() {
-    this.setState({currentSeason: this.state.previousSeason});
+    this.setState({currentSeason: this.state.previousSeason, loaded: false});
   },
   nextSeasonClick : function() {
-    this.setState({currentSeason: this.state.nextSeason});
+    this.setState({currentSeason: this.state.nextSeason, loaded: false});
   },
   getTeamSeasonInfo : function() {
-    Actions.getTeamInfo(this.state.currentSeason, '1610612761', 'Regular%20Season'); // thunder
+    Actions.getTeamInfo(this.state.currentSeason, this.props.params.teamId, 'Regular%20Season'); // thunder
   },
   getPrevAndNextSeasons : function() {
     var currentSeason = this.state.currentSeason;
@@ -48,10 +51,12 @@ var TeamInfoPage = React.createClass({
     var nextSeason = nextYear + '-' + nextNumber;
     this.setState({previousSeason: previousSeason, nextSeason: nextSeason});
   },
+  onLoad : function() {
+    this.setState({loaded: true})
+  },
   render : function() {
     this.getTeamSeasonInfo();
     if(this.state.teamInfo.resultSets) {
-      // Team statistics for top panel
       var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
       var statsHeaders = this.state.teamInfo.resultSets[0].headers;
       var year = teamInformation[statsHeaders.indexOf("SEASON_YEAR")];
@@ -77,45 +82,39 @@ var TeamInfoPage = React.createClass({
       var oppg = teamRanks[ranksHeaders.indexOf("OPP_PTS_PG")];
 
       return (
-        <div className="container">
-          <div className="row">
-            <div className="col-sm-8 col-xs-12">
-              <div className="panel panel-default">
-                <div className="panel-heading">
-                  <TeamInfoHeader
-                    path={imgSrc}
-                    width="300"
-                    alt="Raptors Logo"
-                    year={year}
-                    conferenceRank={conferenceRank}
-                    conference={teamConference}
-                    divisionRank={divisionRank}
-                    division={teamDivision}
-                    wins={wins}
-                    losses={losses}
-                    winPercentage={winPct}
-                  />
-                  <button onClick={this.previousSeasonClick}>Previous Season</button>
-                  <button onClick={this.nextSeasonClick}>Next Season</button>
-                </div>
+        <div className="panel panel-default">
+          <Loader loaded={this.state.loaded}>
+            <div className="panel-heading">
+              <TeamInfoHeader
+                path={imgSrc}
+                width="300"
+                alt="Raptors Logo"
+                year={year}
+                conferenceRank={conferenceRank}
+                conference={teamConference}
+                divisionRank={divisionRank}
+                division={teamDivision}
+                wins={wins}
+                losses={losses}
+                winPercentage={winPct}
+                onLoad={this.onLoad}
+              />
+              <button onClick={this.previousSeasonClick}>Previous Season</button>
+              <button onClick={this.nextSeasonClick}>Next Season</button>
+            </div>
+          </Loader>
 
-                <div className="panel-body">
-                  <SeasonInfo
-                    pointsRank={pointsRank}
-                    ppg={ppg}
-                    assistsRank={assistsRank}
-                    apg={apg}
-                    reboundsRank={reboundsRank}
-                    rpg={rpg}
-                    opponentPointsRank={opponentsPointsRank}
-                    oppg={oppg}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-4 col-xs-12">
-              <p>All of the team logos are going to go here, eventually.</p>
-            </div>
+          <div className="panel-body">
+            <SeasonInfo
+              pointsRank={pointsRank}
+              ppg={ppg}
+              assistsRank={assistsRank}
+              apg={apg}
+              reboundsRank={reboundsRank}
+              rpg={rpg}
+              opponentPointsRank={opponentsPointsRank}
+              oppg={oppg}
+            />
           </div>
         </div>
       );

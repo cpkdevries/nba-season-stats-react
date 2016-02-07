@@ -8,6 +8,7 @@ var TeamStore = Reflux.createStore({
     HTTP.getTeamInfo('/stats/teaminfocommon/?Season=' + season + '&TeamID=' + teamId + '&LeagueID=00&SeasonType=' + seasonType)
     .then(function(jsonResponse) {
       this.teamInfo = jsonResponse;
+      this.loaded = true;
       this.fireUpdate();
     }.bind(this));
   },
