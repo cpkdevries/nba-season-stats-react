@@ -10,17 +10,16 @@ var Loader = require('react-loader');
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
   getInitialState : function() {
-    return({teamInfo: [], currentSeason: '2000-01', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId});
+    return({teamInfo: [], currentSeason: '2015-16', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId});
   },
   componentDidUpdate : function() {
-    console.log('update');
     if (this.state.currentSeason === this.state.previousSeason || this.state.currentSeason === this.state.nextSeason) {
       this.getPrevAndNextSeasons();
       this.getTeamSeasonInfo();
     }
   },
   componentWillReceiveProps : function(nextProps) {
-    this.setState({ teamId: nextProps.params.teamId });
+    this.setState({ teamId: nextProps.params.teamId, currentSeason: '2015-16', previousSeason: '2015-16', nextSeason: '2015-16', loaded: false });
   },
   componentDidMount : function() {
     this.getPrevAndNextSeasons();
@@ -44,7 +43,6 @@ var TeamInfoPage = React.createClass({
     var currentSeason = this.state.currentSeason;
     var lastNumber = parseInt(currentSeason.slice(-2)) - 1;
     if(lastNumber === -1) {
-      console.log("SADF");
       lastNumber = 99;
     }
     var previousYear = parseInt((currentSeason).slice(0,4)) - 1;
@@ -77,6 +75,7 @@ var TeamInfoPage = React.createClass({
       var losses = teamInformation[statsHeaders.indexOf("L")];
       var winPct = helpers.humanizePercentage(teamInformation[statsHeaders.indexOf("PCT")]);
       var imgSrc = helpers.getImageSource(teamInformation[statsHeaders.indexOf("TEAM_CITY")] + " " + teamInformation[statsHeaders.indexOf("TEAM_NAME")]);
+      var yearEntered = teamInformation[statsHeaders.indexOf("MIN_YEAR")];
 
       // Team Ranks (body)
       var ranksHeaders = this.state.teamInfo.resultSets[1].headers;
@@ -107,6 +106,7 @@ var TeamInfoPage = React.createClass({
                 losses={losses}
                 winPercentage={winPct}
                 onLoad={this.onLoad}
+                yearEntered={yearEntered}
               />
               <button onClick={this.previousSeasonClick} disabled={this.state.disablePreviousButton}>Previous Season</button>
               <button onClick={this.nextSeasonClick} disabled={this.state.disableNextButton}>Next Season</button>

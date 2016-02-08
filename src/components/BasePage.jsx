@@ -73,7 +73,7 @@ var westTeamInfo = [
     "img": "../img/golden-state-warriors.png"
   },
   {
-    "id": "1610612741",
+    "id": "1610612742",
     "img": "../img/dallas-mavericks.png"
   },
   {

@@ -26326,7 +26326,7 @@ var westTeamInfo = [{
   "id": "1610612744",
   "img": "../img/golden-state-warriors.png"
 }, {
-  "id": "1610612741",
+  "id": "1610612742",
   "img": "../img/dallas-mavericks.png"
 }, {
   "id": "1610612750",
@@ -26601,12 +26601,12 @@ var TeamInfoHeader = React.createClass({
       { className: 'row' },
       React.createElement(
         'div',
-        { className: 'col-sm-6 col-xs-12' },
-        React.createElement(TeamLogo, { path: this.props.path, alt: this.props.alt, width: '300' })
+        { className: 'col-xs-12 text-center' },
+        React.createElement(TeamLogo, { path: this.props.path, alt: this.props.alt, width: '225' })
       ),
       React.createElement(
         'div',
-        { className: 'col-sm-6 col-xs-12' },
+        { className: 'col-xs-12' },
         React.createElement(
           'h3',
           null,
@@ -26644,7 +26644,7 @@ var TeamInfoHeader = React.createClass({
             ),
             React.createElement(
               'div',
-              { className: 'col-xs-6' },
+              { className: 'col-xs-6 text-right' },
               this.props.wins,
               '-',
               this.props.losses
@@ -26664,9 +26664,27 @@ var TeamInfoHeader = React.createClass({
             ),
             React.createElement(
               'div',
-              { className: 'col-xs-6' },
+              { className: 'col-xs-6 text-right' },
               this.props.winPercentage,
               '%'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+              'div',
+              { className: 'col-xs-6' },
+              React.createElement(
+                'p',
+                { style: bold },
+                'Entered the NBA In:'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'col-xs-6 text-right' },
+              this.props.yearEntered
             )
           )
         )
@@ -26692,17 +26710,16 @@ var TeamInfoPage = React.createClass({
 
   mixins: [Reflux.listenTo(TeamStore, 'onChange')],
   getInitialState: function () {
-    return { teamInfo: [], currentSeason: '2000-01', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId };
+    return { teamInfo: [], currentSeason: '2015-16', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId };
   },
   componentDidUpdate: function () {
-    console.log('update');
     if (this.state.currentSeason === this.state.previousSeason || this.state.currentSeason === this.state.nextSeason) {
       this.getPrevAndNextSeasons();
       this.getTeamSeasonInfo();
     }
   },
   componentWillReceiveProps: function (nextProps) {
-    this.setState({ teamId: nextProps.params.teamId });
+    this.setState({ teamId: nextProps.params.teamId, currentSeason: '2015-16', previousSeason: '2015-16', nextSeason: '2015-16', loaded: false });
   },
   componentDidMount: function () {
     this.getPrevAndNextSeasons();
@@ -26726,7 +26743,6 @@ var TeamInfoPage = React.createClass({
     var currentSeason = this.state.currentSeason;
     var lastNumber = parseInt(currentSeason.slice(-2)) - 1;
     if (lastNumber === -1) {
-      console.log("SADF");
       lastNumber = 99;
     }
     var previousYear = parseInt(currentSeason.slice(0, 4)) - 1;
@@ -26759,6 +26775,7 @@ var TeamInfoPage = React.createClass({
       var losses = teamInformation[statsHeaders.indexOf("L")];
       var winPct = helpers.humanizePercentage(teamInformation[statsHeaders.indexOf("PCT")]);
       var imgSrc = helpers.getImageSource(teamInformation[statsHeaders.indexOf("TEAM_CITY")] + " " + teamInformation[statsHeaders.indexOf("TEAM_NAME")]);
+      var yearEntered = teamInformation[statsHeaders.indexOf("MIN_YEAR")];
 
       // Team Ranks (body)
       var ranksHeaders = this.state.teamInfo.resultSets[1].headers;
@@ -26792,7 +26809,8 @@ var TeamInfoPage = React.createClass({
               wins: wins,
               losses: losses,
               winPercentage: winPct,
-              onLoad: this.onLoad
+              onLoad: this.onLoad,
+              yearEntered: yearEntered
             }),
             React.createElement(
               'button',

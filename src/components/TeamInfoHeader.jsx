@@ -8,10 +8,10 @@ var TeamInfoHeader = React.createClass({
     };
     return (
       <div className="row">
-        <div className="col-sm-6 col-xs-12">
-          <TeamLogo path={this.props.path} alt={this.props.alt} width="300" />
+        <div className="col-xs-12 text-center">
+          <TeamLogo path={this.props.path} alt={this.props.alt} width="225" />
         </div>
-        <div className="col-sm-6 col-xs-12">
+        <div className="col-xs-12">
           <h3>{this.props.year} Season</h3>
           <h4>{this.props.conferenceRank} in the {this.props.conference}</h4>
           <h4>{this.props.divisionRank} in the {this.props.division}</h4>
@@ -20,7 +20,7 @@ var TeamInfoHeader = React.createClass({
               <div className="col-xs-6">
                 <p style={bold}>Record:</p>
               </div>
-              <div className="col-xs-6">
+              <div className="col-xs-6 text-right">
                 {this.props.wins}-{this.props.losses}
               </div>
             </div>
@@ -28,8 +28,16 @@ var TeamInfoHeader = React.createClass({
               <div className="col-xs-6">
                 <p style={bold}>Winning Percentage:</p>
               </div>
-              <div className="col-xs-6">
+              <div className="col-xs-6 text-right">
                 {this.props.winPercentage}%
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-6">
+                <p style={bold}>Entered the NBA In:</p>
+              </div>
+              <div className="col-xs-6 text-right">
+                {this.props.yearEntered}
               </div>
             </div>
           </div>
