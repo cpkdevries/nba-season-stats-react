@@ -10,15 +10,21 @@ var Loader = require('react-loader');
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
   getInitialState : function() {
-    return({teamInfo: [], currentSeason: '2014-15', previousSeason: '', nextSeason: '', loaded: false});
+    return({teamInfo: [], currentSeason: '2000-01', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId});
   },
   componentDidUpdate : function() {
+    console.log('update');
     if (this.state.currentSeason === this.state.previousSeason || this.state.currentSeason === this.state.nextSeason) {
       this.getPrevAndNextSeasons();
+      this.getTeamSeasonInfo();
     }
+  },
+  componentWillReceiveProps : function(nextProps) {
+    this.setState({ teamId: nextProps.params.teamId });
   },
   componentDidMount : function() {
     this.getPrevAndNextSeasons();
+    this.getTeamSeasonInfo();
   },
   onChange : function(event, teamInfo) {
     if(this.isMounted()) {
@@ -32,11 +38,15 @@ var TeamInfoPage = React.createClass({
     this.setState({currentSeason: this.state.nextSeason, loaded: false});
   },
   getTeamSeasonInfo : function() {
-    Actions.getTeamInfo(this.state.currentSeason, this.props.params.teamId, 'Regular%20Season'); // thunder
+    Actions.getTeamInfo(this.state.currentSeason, this.state.teamId, 'Regular%20Season'); // thunder
   },
   getPrevAndNextSeasons : function() {
     var currentSeason = this.state.currentSeason;
     var lastNumber = parseInt(currentSeason.slice(-2)) - 1;
+    if(lastNumber === -1) {
+      console.log("SADF");
+      lastNumber = 99;
+    }
     var previousYear = parseInt((currentSeason).slice(0,4)) - 1;
     if (lastNumber.toString().length === 1) {
       lastNumber = '0' + lastNumber.toString();
@@ -55,7 +65,6 @@ var TeamInfoPage = React.createClass({
     this.setState({loaded: true})
   },
   render : function() {
-    this.getTeamSeasonInfo();
     if(this.state.teamInfo.resultSets) {
       var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
       var statsHeaders = this.state.teamInfo.resultSets[0].headers;
@@ -80,10 +89,10 @@ var TeamInfoPage = React.createClass({
       var rpg = teamRanks[ranksHeaders.indexOf("REB_PG")];
       var opponentsPointsRank = helpers.humanizeNumber(teamRanks[ranksHeaders.indexOf("OPP_PTS_RANK")]);
       var oppg = teamRanks[ranksHeaders.indexOf("OPP_PTS_PG")];
-
       return (
-        <div className="panel panel-default">
-          <Loader loaded={this.state.loaded}>
+        <Loader loaded={this.state.loaded}>
+          <div className="panel panel-default">
+
             <div className="panel-heading">
               <TeamInfoHeader
                 path={imgSrc}
@@ -99,10 +108,10 @@ var TeamInfoPage = React.createClass({
                 winPercentage={winPct}
                 onLoad={this.onLoad}
               />
-              <button onClick={this.previousSeasonClick}>Previous Season</button>
-              <button onClick={this.nextSeasonClick}>Next Season</button>
+              <button onClick={this.previousSeasonClick} disabled={this.state.disablePreviousButton}>Previous Season</button>
+              <button onClick={this.nextSeasonClick} disabled={this.state.disableNextButton}>Next Season</button>
             </div>
-          </Loader>
+
 
           <div className="panel-body">
             <SeasonInfo
@@ -116,8 +125,10 @@ var TeamInfoPage = React.createClass({
               oppg={oppg}
             />
           </div>
-        </div>
+          </div>
+        </Loader>
       );
+      document.getElementById('asdf').disabled = 'disabled';
     } else {
       return <p>Loading..</p>
     }

@@ -11,7 +11,7 @@ var TeamListing = React.createClass({
     var link = "/teams/" + this.props.id;
       return (
         <div style={padded}>
-          <Link to={link}><img src={this.props.imgSrc} width="100" /></Link>
+          <Link to={link}><img src={this.props.imgSrc} width="70" /></Link>
         </div>
       );
   }
