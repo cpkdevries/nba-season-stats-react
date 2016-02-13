@@ -121,7 +121,7 @@ var westTeamInfo = [
     "img": "../img/sacramento-kings.png"
   },
   {
-    "id": "1610612764",
+    "id": "1610612759",
     "img": "../img/san-antonio-spurs.png"
   },
 ];
@@ -141,13 +141,28 @@ var BasePage = React.createClass({
     var westTeams = westTeamInfo.map(function(team) {
       return <TeamListing key={team.id} imgSrc={team.img} id={team.id} />;
     });
-    var style = {
-      paddingTop: 20
+    var rowStyle = {
+      marginTop: 0,
+      marginBottom: 20,
+      padding: "30 5",
+      background: "#DBDBCE",
+      boxShadow: "5px 5px 5px #333",
+      borderStyle: "solid",
+      borderWidth: "0 2px 2px 2px"
+    }
+    var footer = {
+      minHeight: 100,
+      padding: 20,
+      background: "#565656",
+      color: "#fff"
+    };
+    var footerContainer = {
+      padding: 0
     };
     return (
       <div>
-        <div className="container" style={style}>
-          <div className="row">
+        <div className="container">
+          <div className="row" style={rowStyle}>
             <div className="col-sm-3 col-xs-12">
               <h3>West Teams</h3>
               <div className="team-logo-links" style={logoLinkStyles}>
@@ -162,6 +177,13 @@ var BasePage = React.createClass({
               <div className="team-logo-links" style={logoLinkStyles}>
                 {eastTeams}
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="container-fluid" style={footerContainer}>
+          <div className="row">
+            <div className="col-xs-12">
+              <footer style={footer}>Footer info wooooo</footer>
             </div>
           </div>
         </div>

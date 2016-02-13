@@ -6,13 +6,17 @@ var TeamInfoHeader = React.createClass({
     var bold = {
       fontWeight: "bold"
     };
+    var padded = {
+      padding: "0 30px"
+    };
+
     return (
       <div className="row">
-        <div className="col-xs-12 text-center">
-          <TeamLogo path={this.props.path} alt={this.props.alt} width="225" />
-        </div>
-        <div className="col-xs-12">
+        <div className="col-xs-12" style={padded}>
+
           <h3>{this.props.year} Season</h3>
+          <button className="btn btn-default" onClick={this.props.previousSeasonClick}>Previous Season</button>
+          <button className="btn btn-default" onClick={this.props.nextSeasonClick}>Next Season</button>
           <h4>{this.props.conferenceRank} in the {this.props.conference}</h4>
           <h4>{this.props.divisionRank} in the {this.props.division}</h4>
           <div className="text-left">

@@ -9,7 +9,7 @@ var SeasonInfo = React.createClass({
       <div className="season-info">
         <div className="row">
           <div className="col-xs-12 text-center">
-            <h2>Season Ranks</h2>
+            <h2>{this.props.season} Season Ranks</h2>
           </div>
         </div>
         <div className="row">

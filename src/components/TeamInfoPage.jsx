@@ -1,11 +1,13 @@
 var React = require('react');
 var SeasonInfo = require('./SeasonInfo.jsx');
+var Router = require('react-router');
 var TeamInfoHeader = require('./TeamInfoHeader.jsx');
 var Reflux = require('reflux');
 var Actions = require('../Reflux/Actions.jsx');
 var TeamStore = require('../Reflux/TeamStore.jsx');
 var helpers = require('../helpers/helpers');
 var Loader = require('react-loader');
+var TeamLogo = require('./TeamLogo.jsx');
 
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
@@ -63,6 +65,48 @@ var TeamInfoPage = React.createClass({
     this.setState({loaded: true})
   },
   render : function() {
+    var panelHeading = {
+      //padding: "0 15px 10px 15px"
+      padding: 0
+    };
+    var loaderStyle = {
+      marginTop: 400
+    };
+    var panel = {
+      boxShadow: "4px 4px 4px #d3d3d3",
+      border: "1px solid #000"
+    };
+    var logoArea = {
+      backgroundImage: "url(/img/basketball-court.jpg)",
+      padding: 10
+    };
+    var options = {
+        lines: 13,
+        length: 20,
+        width: 10,
+        radius: 30,
+        corners: 1,
+        rotate: 0,
+        direction: 1,
+        color: '#000',
+        speed: 3,
+        trail: 60,
+        shadow: false,
+        hwaccel: false,
+        zIndex: 2e9,
+        top: '65%',
+        left: '50%',
+        scale: 1.00
+    };
+    var options2 = {
+      lines: 0
+    };
+    var panelHeader = {
+      minHeight: 500
+    };
+    var panelBody = {
+      minHeight: 200
+    };
     if(this.state.teamInfo.resultSets) {
       var teamInformation = this.state.teamInfo.resultSets[0].rowSet[0];
       var statsHeaders = this.state.teamInfo.resultSets[0].headers;
@@ -89,46 +133,55 @@ var TeamInfoPage = React.createClass({
       var opponentsPointsRank = helpers.humanizeNumber(teamRanks[ranksHeaders.indexOf("OPP_PTS_RANK")]);
       var oppg = teamRanks[ranksHeaders.indexOf("OPP_PTS_PG")];
       return (
-        <Loader loaded={this.state.loaded}>
-          <div className="panel panel-default">
-
-            <div className="panel-heading">
-              <TeamInfoHeader
-                path={imgSrc}
-                width="300"
-                alt="Raptors Logo"
-                year={year}
-                conferenceRank={conferenceRank}
-                conference={teamConference}
-                divisionRank={divisionRank}
-                division={teamDivision}
-                wins={wins}
-                losses={losses}
-                winPercentage={winPct}
-                onLoad={this.onLoad}
-                yearEntered={yearEntered}
-              />
-              <button onClick={this.previousSeasonClick} disabled={this.state.disablePreviousButton}>Previous Season</button>
-              <button onClick={this.nextSeasonClick} disabled={this.state.disableNextButton}>Next Season</button>
+        <div>
+          <div className="panel panel-default" style={panel}>
+            <div className="panel-heading" style={panelHeading}>
+              <div className="col-xs-12 text-center" style={logoArea}>
+                <TeamLogo path={imgSrc} alt={"Raptors Logo"} height="225" />
+              </div>
+              <div style={panelHeader}>
+                <Loader loaded={this.state.loaded} options={options}>
+                <TeamInfoHeader
+                  year={year}
+                  conferenceRank={conferenceRank}
+                  conference={teamConference}
+                  divisionRank={divisionRank}
+                  division={teamDivision}
+                  wins={wins}
+                  losses={losses}
+                  winPercentage={winPct}
+                  onLoad={this.onLoad}
+                  yearEntered={yearEntered}
+                  previousSeasonClick={this.previousSeasonClick}
+                  nextSeasonClick={this.nextSeasonClick}
+                  loaded={this.state.loaded}
+                />
+                </Loader>
+              </div>
             </div>
 
 
           <div className="panel-body">
-            <SeasonInfo
-              pointsRank={pointsRank}
-              ppg={ppg}
-              assistsRank={assistsRank}
-              apg={apg}
-              reboundsRank={reboundsRank}
-              rpg={rpg}
-              opponentPointsRank={opponentsPointsRank}
-              oppg={oppg}
-            />
+            <div style={panelBody}>
+              <Loader loaded={this.state.loaded} options={options2}>
+                <SeasonInfo
+                  season={year}
+                  pointsRank={pointsRank}
+                  ppg={ppg}
+                  assistsRank={assistsRank}
+                  apg={apg}
+                  reboundsRank={reboundsRank}
+                  rpg={rpg}
+                  opponentPointsRank={opponentsPointsRank}
+                  oppg={oppg}
+                  loaded={this.state.loaded}
+                />
+              </Loader>
+            </div>
           </div>
           </div>
-        </Loader>
+        </div>
       );
-      document.getElementById('asdf').disabled = 'disabled';
     } else {
       return <p>Loading..</p>
     }
