@@ -21,7 +21,7 @@ var TeamInfoPage = React.createClass({
     }
   },
   componentWillReceiveProps : function(nextProps) {
-    this.setState({ teamId: nextProps.params.teamId, currentSeason: this.state.currentSeason, currentSeasonHolder: '', previousSeason: '', nextSeason: '2015-16', loaded: false });
+    this.setState({ teamId: nextProps.params.teamId, currentSeason: '2015-16', currentSeasonHolder: '', previousSeason: '', nextSeason: '2015-16', loaded: false });
   },
   componentDidMount : function() {
     this.getPrevAndNextSeasons();
