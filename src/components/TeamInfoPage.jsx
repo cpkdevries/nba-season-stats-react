@@ -21,14 +21,13 @@ var TeamInfoPage = React.createClass({
     }
   },
   componentWillReceiveProps : function(nextProps) {
-    this.setState({ teamId: nextProps.params.teamId, currentSeason: '2015-16', previousSeason: '2015-16', nextSeason: '2015-16', loaded: false });
+    this.setState({ teamId: nextProps.params.teamId, currentSeason: '2015-16', currentSeasonHolder: '', previousSeason: '', nextSeason: '2015-16', loaded: false });
   },
   componentDidMount : function() {
     this.getPrevAndNextSeasons();
     this.getTeamSeasonInfo();
   },
   onChange : function(event, teamInfo) {
-    console.log('change!');
     if(this.isMounted()) {
       this.setState({teamInfo: teamInfo, loaded: true});
     }
