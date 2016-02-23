@@ -12,10 +12,10 @@ var TeamLogo = require('./TeamLogo.jsx');
 var TeamInfoPage = React.createClass({
   mixins:[Reflux.listenTo(TeamStore, 'onChange')],
   getInitialState : function() {
-    return({teamInfo: [], currentSeason: '2015-16', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId});
+    return({teamInfo: [], currentSeason: '2015-16', currentSeasonHolder: '2015-16', previousSeason: '', nextSeason: '', loaded: false, disablePreviousButton: false, disableNextButton: false, teamId: this.props.params.teamId});
   },
   componentDidUpdate : function() {
-    if (this.state.currentSeason === this.state.previousSeason || this.state.currentSeason === this.state.nextSeason) {
+    if (this.state.currentSeason != this.state.currentSeasonHolder) {
       this.getPrevAndNextSeasons();
       this.getTeamSeasonInfo();
     }
@@ -28,6 +28,7 @@ var TeamInfoPage = React.createClass({
     this.getTeamSeasonInfo();
   },
   onChange : function(event, teamInfo) {
+    console.log('change!');
     if(this.isMounted()) {
       this.setState({teamInfo: teamInfo, loaded: true});
     }
@@ -40,6 +41,11 @@ var TeamInfoPage = React.createClass({
   },
   getTeamSeasonInfo : function() {
     Actions.getTeamInfo(this.state.currentSeason, this.state.teamId, 'Regular%20Season'); // thunder
+  },
+  getSpecificSeason : function(e) {
+    if (e.target.value != this.state.currentSeasonHolder) {
+      this.setState({currentSeason: e.target.value, loaded: false});
+    }
   },
   getPrevAndNextSeasons : function() {
     var currentSeason = this.state.currentSeason;
@@ -59,7 +65,7 @@ var TeamInfoPage = React.createClass({
 
     var previousSeason = previousYear + '-' + lastNumber;
     var nextSeason = nextYear + '-' + nextNumber;
-    this.setState({previousSeason: previousSeason, nextSeason: nextSeason});
+    this.setState({previousSeason: previousSeason, nextSeason: nextSeason, currentSeasonHolder: this.state.currentSeason});
   },
   onLoad : function() {
     this.setState({loaded: true})
@@ -120,6 +126,7 @@ var TeamInfoPage = React.createClass({
       var winPct = helpers.humanizePercentage(teamInformation[statsHeaders.indexOf("PCT")]);
       var imgSrc = helpers.getImageSource(teamInformation[statsHeaders.indexOf("TEAM_CITY")] + " " + teamInformation[statsHeaders.indexOf("TEAM_NAME")]);
       var yearEntered = teamInformation[statsHeaders.indexOf("MIN_YEAR")];
+      var maxYear = teamInformation[statsHeaders.indexOf("MAX_YEAR")];
 
       // Team Ranks (body)
       var ranksHeaders = this.state.teamInfo.resultSets[1].headers;
@@ -151,10 +158,13 @@ var TeamInfoPage = React.createClass({
                   losses={losses}
                   winPercentage={winPct}
                   onLoad={this.onLoad}
+                  maxYear = {maxYear}
                   yearEntered={yearEntered}
                   previousSeasonClick={this.previousSeasonClick}
                   nextSeasonClick={this.nextSeasonClick}
                   loaded={this.state.loaded}
+                  seasonChange={this.getSpecificSeason}
+                  selectedSeason={this.state.currentSeason}
                 />
                 </Loader>
               </div>
