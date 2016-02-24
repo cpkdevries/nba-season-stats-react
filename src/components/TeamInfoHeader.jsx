@@ -50,8 +50,8 @@ var TeamInfoHeader = React.createClass({
               </div>
             </div>
           </div>
-          <button className="btn btn-default" onClick={this.props.previousSeasonClick}>Previous Season</button>
-          <button className="btn btn-default" onClick={this.props.nextSeasonClick}>Next Season</button>
+          <button className="btn btn-default" onClick={this.props.previousSeasonClick} disabled={this.props.previousSeasonEnabled}>Previous Season</button>
+          <button className="btn btn-default" onClick={this.props.nextSeasonClick} disabled={this.props.nextSeasonEnabled}>Next Season</button>
           <h4>{this.props.conferenceRank} in the {this.props.conference}</h4>
           <h4>{this.props.divisionRank} in the {this.props.division}</h4>
           <div className="text-left">

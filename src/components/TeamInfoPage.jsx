@@ -39,7 +39,7 @@ var TeamInfoPage = React.createClass({
     this.setState({currentSeason: this.state.nextSeason, loaded: false});
   },
   getTeamSeasonInfo : function() {
-    Actions.getTeamInfo(this.state.currentSeason, this.state.teamId, 'Regular%20Season'); // thunder
+    Actions.getTeamInfo(this.state.currentSeason, this.state.teamId, 'Regular%20Season');
   },
   getSpecificSeason : function(e) {
     if (e.target.value != this.state.currentSeasonHolder) {
@@ -164,6 +164,8 @@ var TeamInfoPage = React.createClass({
                   loaded={this.state.loaded}
                   seasonChange={this.getSpecificSeason}
                   selectedSeason={this.state.currentSeason}
+                  nextSeasonEnabled={this.state.disableNextButton}
+                  previousSeasonEnabled={this.state.disablePreviousButton}
                 />
                 </Loader>
               </div>
